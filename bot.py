@@ -1,7 +1,17 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ChatMemberHandler
 from telegram import ChatPermissions
 import json, os, re
+from flask import Flask
+import threading
 
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "The Red Bot is running!"
+
+def run_web():
+    app.run(host="0.0.0.0", port=8080)
 TOKEN = "7843972684:AAFqk3ta-jG4CIbC6C0StYW7wD8ZuBB98Pc"
 OWNER_ID = 7293463985
 GROUPS_FILE = "enabled_groups.json"
@@ -217,5 +227,6 @@ def get_chat_id(update, context):
 
 dp.add_handler(CommandHandler("id", get_chat_id))
 
+threading.Thread(target=run_web).start()
 updater.start_polling()
 updater.idle()
