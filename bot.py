@@ -12,7 +12,8 @@ def home():
 
 def run_web():
     app.run(host="0.0.0.0", port=8080)
-import os
+
+# جلب التوكن من المتغير البيئي
 TOKEN = os.environ.get("BOT_TOKEN")
 OWNER_ID = 7293463985
 GROUPS_FILE = "enabled_groups.json"
@@ -197,6 +198,9 @@ def group_link(update, context):
         except:
             update.message.reply_text("❗ Failed to get group link.")
 
+def get_chat_id(update, context):
+    update.message.reply_text(f"Group ID: {update.effective_chat.id}")
+
 # Bot setup
 updater = Updater(TOKEN, use_context=True)
 dp = updater.dispatcher
@@ -218,16 +222,15 @@ dp.add_handler(CommandHandler("ban", ban))
 dp.add_handler(CommandHandler("unban", unban))
 dp.add_handler(CommandHandler("info", user_info))
 dp.add_handler(CommandHandler("link", group_link))
+dp.add_handler(CommandHandler("id", get_chat_id))
 
-# Automatic detection
+# Auto features
 dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, welcome))
 dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, check_subscription))
 dp.add_handler(MessageHandler(Filters.text & Filters.group, auto_detect_ads))
-def get_chat_id(update, context):
-    update.message.reply_text(f"Group ID: {update.effective_chat.id}")
 
-dp.add_handler(CommandHandler("id", get_chat_id))
-
+# تشغيل السيرفر والـ polling
 threading.Thread(target=run_web).start()
+updater.bot.delete_webhook()  # حذف Webhook القديم
 updater.start_polling()
 updater.idle()
