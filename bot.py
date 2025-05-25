@@ -13,6 +13,8 @@ def home():
 def run_web():
     app.run(host="0.0.0.0", port=8080)
 TOKEN = "7843972684:AAFqk3ta-jG4CIbC6C0StYW7wD8ZuBB98Pc"
+import telegram
+telegram.Bot(token=TOKEN).delete_webhook()
 OWNER_ID = 7293463985
 GROUPS_FILE = "enabled_groups.json"
 forced_channel = None
